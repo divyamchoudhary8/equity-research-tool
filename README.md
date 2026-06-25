@@ -1,4 +1,5 @@
 # EquityIQ — Equity Research Platform
+![Tests](https://github.com/divyamchoudhary8/equity-research-tool/actions/workflows/tests.yml/badge.svg)
 
 > **Professional-grade equity research and valuation for NSE-listed companies.**
 > Covers any NSE ticker with a 7-tab analytical dashboard and a one-click PDF research report.
@@ -12,6 +13,20 @@ EquityIQ is an automated equity research platform built in Python. It replicates
 The tool is designed to produce IB-quality outputs from a single ticker input, with no manual data entry required. All data is fetched live from Yahoo Finance via `yfinance`.
 
 ---
+
+## Dashboard Screenshots
+
+### Football Field Valuation
+![Football Field](screenshots/02_football_field.png)
+
+### DCF Sensitivity Analysis
+![DCF Sensitivity](screenshots/03_dcf_sensitivity.png)
+
+### Comparable Company Analysis
+![Comps Table](screenshots/04_comps_table.png)
+
+### Piotroski F-Score
+![Piotroski](screenshots/05_piotroski.png)
 
 ## Features
 
