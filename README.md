@@ -224,15 +224,6 @@ The football field aggregates all three into a single visual, which is the stand
 
 ---
 
-## Related Work
-
-| Project | Description |
-|---|---|
-| [Market Regime Forecasting Engine](https://github.com/divyamchoudhary8/market-regime-engine) | Macro regime detection using Hidden Markov Models, LightGBM, and SHAP — V2 accuracy 54.7% |
-| **EquityIQ** (this repo) | Automated equity research and valuation platform for NSE-listed companies |
-
----
-
 ## Author
 
 **Divyam Choudhary**
