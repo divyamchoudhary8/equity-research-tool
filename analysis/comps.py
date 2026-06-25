@@ -63,6 +63,40 @@ SECTOR_PEERS = {
 
 DEFAULT_PEERS = ["RELIANCE", "TCS", "HDFCBANK", "INFY", "HINDUNILVR"]
 
+# Industry-level peers — more specific than sector, checked first
+# Prevents mismatches like Zomato being grouped with auto companies
+INDUSTRY_PEERS = {
+    # Internet / Consumer Tech
+    "Internet Retail":                  ["ETERNAL", "NYKAA", "INDIAMART", "DELHIVERY", "POLICYBZR"],
+    "Internet Content & Information":   ["ETERNAL", "NYKAA", "INDIAMART", "INFO EDGE", "JUST DIAL"],
+    "Software—Application":             ["INFY", "WIPRO", "LTIM", "MPHASIS", "PERSISTENT"],
+    "Software—Infrastructure":          ["TCS", "HCLTECH", "TECHM", "KPITTECH", "TATAELXSI"],
+    # Auto — specific industries within Consumer Cyclical
+    "Auto Manufacturers":               ["MARUTI", "TATAMOTORS", "MSIL", "EICHERMOT", "MAHINDRA"],
+    "Auto Parts":                       ["BOSCHLTD", "MOTHERSON", "BALKRISIND", "EXIDEIND", "AMARAJABAT"],
+    "Motorcycles":                      ["BAJAJ-AUTO", "HEROMOTOCO", "TVSMOTORS", "ROYALENFD", "EICHERMOT"],
+    # Financial
+    "Banks—Regional":                   ["HDFCBANK", "ICICIBANK", "KOTAKBANK", "AXISBANK", "INDUSINDBK"],
+    "Banks—Diversified":                ["SBIN", "BANKBARODA", "PNB", "CANARABANK", "UNIONBANK"],
+    "Insurance—Life":                   ["LICI", "SBILIFE", "HDFCLIFE", "ICICIPRULIFE", "MAXFINSERV"],
+    "Credit Services":                  ["BAJFINANCE", "BAJAJFINSV", "CHOLAFIN", "MUTHOOTFIN", "MANAPPURAM"],
+    # Consumer
+    "Packaged Foods":                   ["NESTLEIND", "HINDUNILVR", "BRITANNIA", "DABUR", "MARICO"],
+    "Beverages—Non-Alcoholic":          ["HATSUN", "VARUN BEVERAGES", "HINDUSTAN COCA", "CCL", "TASTY BITE"],
+    "Luxury Goods":                     ["TITAN", "KALYAN", "SENCO", "PCJEWELLER", "THANGAMAYIL"],
+    "Apparel Retail":                   ["TRENT", "ABFRL", "SHOPERSTOP", "MANYAVAR", "BATA"],
+    "Specialty Retail":                 ["DMART", "VMART", "SPENCERS", "FRETAIL", "TRENT"],
+    # Pharma
+    "Drug Manufacturers—General":       ["SUNPHARMA", "CIPLA", "DRREDDY", "LUPIN", "AUROPHARMA"],
+    "Drug Manufacturers—Specialty":     ["DIVISLAB", "ALKEM", "IPCA", "GLENMARK", "TORNTPHARM"],
+    # Energy
+    "Oil & Gas Refining & Marketing":   ["RELIANCE", "BPCL", "IOC", "HINDPETRO", "MRPL"],
+    "Oil & Gas E&P":                    ["ONGC", "OIL", "CAIRN", "VEDL", "GAIL"],
+    # Industrials
+    "Engineering & Construction":       ["LT", "NCC", "KEC", "KALPATPOWR", "IRCON"],
+    "Conglomerates":                    ["LT", "RELIANCE", "TATAMOTORS", "BAJAJ-AUTO", "SIEMENS"],
+}
+
 
 class CompsAnalysis:
     """
@@ -108,11 +142,21 @@ class CompsAnalysis:
 
     def suggest_peers(self) -> list:
         """
-        Returns a list of 5 suggested peer tickers based on sector.
-        Excludes the target company itself.
+        Returns a list of 5 suggested peer tickers.
+        Checks industry first (more specific), then sector, then default.
+        This prevents mismatches like food-delivery stocks being
+        grouped with auto companies under "Consumer Cyclical".
         """
-        peers = SECTOR_PEERS.get(self.target_sector, DEFAULT_PEERS)
-        # Remove target if it appears in the peer list
+        target_industry = self.target_info.get("industry", "")
+
+        # Industry-level mapping takes priority — much more specific
+        peers = INDUSTRY_PEERS.get(target_industry)
+
+        # Fall back to sector-level if no industry match
+        if not peers:
+            peers = SECTOR_PEERS.get(self.target_sector, DEFAULT_PEERS)
+
+        # Remove target itself
         peers = [p for p in peers if p.upper() != self.target.upper()]
         return peers[:5]
 
